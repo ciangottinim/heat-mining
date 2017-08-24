@@ -50,13 +50,6 @@ resources:
       user_data:
         |
         #!/bin/bash
-        echo "141.250.2.227   openstack.fisica.unipg.it       controller" >> /etc/hosts
-        apt-get update
-        apt-get dist-upgrade -y
-        apt-get install libmicrohttpd-dev libssl-dev cmake build-essential libhwloc-dev -y
-        git clone https://github.com/ciangottinim/xmr-stak-cpu.git /root/xmr-stak-cpu && cd /root
-        cd /root/xmr-stak-cpu && cmake .
-        cd /root/xmr-stak-cpu && make install
         cd /root/xmr-stak-cpu/bin && ./xmr-stack-cpu &
 
 outputs:

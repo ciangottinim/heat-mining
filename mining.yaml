@@ -9,13 +9,15 @@ parameters:
     description: external net name. use neutron net-list to figure it out.
   key_name:
     type: string
+    default: manuel-key
     description: ssh key required for server creation
   image_name:
     type: string
+    default: mclus
     description: image to use for the server
   flavor_name:
     type: string
-    default: m1.medium
+    default: mclus.normal
     description: openstack server flavor name use openstack flavor list to see options
   server_number:
     type: number
