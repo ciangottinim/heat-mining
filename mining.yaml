@@ -45,7 +45,7 @@ resources:
     properties:
       count: {get_param: server_number}
       resource_def:
-        type: 
+        type: https://raw.githubusercontent.com/ciangottinim/heat-mining/master/server-template.yaml
         properties:
           server_name: mclus-%index%
           ssh_key_name: {get_param: key_name}
