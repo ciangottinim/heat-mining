@@ -40,7 +40,7 @@ resources:
         {remote_ip_prefix: 0.0.0.0/0,
         protocol: icmp}]
 
-  mesos_slaves:
+  server:
     type: OS::Heat::ResourceGroup
     properties:
       count: {get_param: server_number}
