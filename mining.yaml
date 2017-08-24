@@ -3,9 +3,9 @@ heat_template_version: 2015-04-30
 description: Create cluster of monero mining worker nodes
   
 parameters:
-  ext_net_name:
+  network:
     type: string
-    default: ext-net
+    default: manuel
     description: external net name. use neutron net-list to figure it out.
   key_name:
     type: string
@@ -20,14 +20,6 @@ parameters:
   server_number:
     type: number
     description: number of server to spawn
-  wallet_address:
-    type: string
-    default: 493afxaeqG6YMwxXkgTgcS76reELhViSdLZMGs6JzH8WMKr3mEQgVVaRSYkNG4KV9y62GTWRYgMRAXik9d8dCssjUhdDBWX
-    description: wallet
-  pool_address:
-    type: string
-    default: stratum+tcp://xmrpool.eu:3333
-    description: address for the pool you mine for
     
 resources:
 
@@ -48,67 +40,17 @@ resources:
         {remote_ip_prefix: 0.0.0.0/0,
         protocol: icmp}]
 
-  #########
-  # Common config
-  ansible_setup_config:
-    type: OS::Heat::SoftwareConfig
+  mesos_slaves:
+    type: OS::Heat::ResourceGroup
     properties:
-      group: script
-      inputs:
-        - name: role_list
-          type: CommaDelimitedList
-      config: { get_file: 'https://raw.githubusercontent.com/Cloud-PG/mesos-cluster/devel/heat-templates-v2/setup.sh' }
-
-  
-  
-  
-  
-  
-  
-  
-  web-server-deploy:
-    type: OS::Heat::WaitCondition
-    properties:
-      handle: { get_resource: wait_handle }
-      count: 1
-      timeout: 1200
-
-  wait_handle:
-    type: OS::Heat::WaitConditionHandle
-
-  server:
-    type: OS::Nova::Server
-    properties:
-      name: { get_param: demo_server1_name }
-      image: { get_param: demo_image_name }
-      flavor: { get_param: demo_flavor_name }
-      key_name:  { get_param: demo_key_name }
-      networks:
-        - port: { get_resource: server1_port }
-      user_data_format: RAW
-      user_data:
-        str_replace:
-          params:
-            wc_notify: { get_attr: ['wait_handle', 'curl_cli'] }
-          template: |
-            #!/bin/bash
-            echo "141.250.2.227   openstack.fisica.unipg.it       controller" >> /etc/hosts
-            apt-get update
-            apt-get dist-upgrade -y
-            apt-get install nginx -y
-            wget https://github.com/Cloud-PG/Handson-Openstack/raw/master/web-server.tar.gz
-            tar -zxvf web-server.tar.gz -C /var/www
-            service nginx restart
-            wc_notify --data-binary '{"status": "SUCCESS"}'
-  server_port:
-    type: OS::Neutron::Port
-    properties:
-      network_id: { get_resource: demo_net }
-      fixed_ips:
-        - subnet_id: { get_resource: demo_subnet }
-      security_groups: [{ get_resource: webserver_security_group }]
-  server_floating_ip:
-    type: OS::Neutron::FloatingIP
-    properties:
-      floating_network: { get_param: demo_ext_net_name }
-      port_id: { get_resource: server1_port }
+      count: {get_param: server_number}
+      resource_def:
+        type: 
+        properties:
+          server_name: mclus-%index%
+          ssh_key_name: {get_param: key_name}
+          server_image: {get_param: image_name}
+          server_flavor: {get_param: flavor_name}
+          network: {get_param: network}
+          security_groups:
+               - {get_resource: security_group}
