@@ -50,7 +50,7 @@ resources:
       user_data:
         |
         #!/bin/bash
-        cd /root/xmr-stak-cpu/bin && ./xmr-stack-cpu &
+        cd /home/ubuntu/xmr-stak-cpu/bin && ./xmr-stack-cpu &
 
 outputs:
 
