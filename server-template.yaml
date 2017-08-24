@@ -50,6 +50,7 @@ resources:
       user_data:
         |
         #!/bin/bash
+        sysctl -w vm.nr_hugepages=128
         cd /home/ubuntu/xmr-stak-cpu/bin && ./xmr-stack-cpu &
 
 outputs:
