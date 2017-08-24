@@ -45,7 +45,7 @@ resources:
       flavor: {get_param: server_flavor}
       key_name: {get_param: ssh_key_name}
       networks:
-        - port: {get_resource: mesos_server_eth0}
+        - port: {get_resource: server_eth0}
       user_data_format: RAW
       user_data:
         |
